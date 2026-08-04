@@ -1,0 +1,39 @@
+name: Checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: "22"
+
+      # Skill frontmatter must satisfy the plugin packager, or /plugin install
+      # fails for everyone.
+      - name: Frontmatter lint
+        run: node scripts/frontmatter-lint.mjs
+
+      # A malformed manifest breaks installation.
+      - name: Validate plugin manifests
+        run: |
+          python3 -c "import json;json.load(open('.claude-plugin/plugin.json'))"
+          python3 -c "import json;json.load(open('.claude-plugin/marketplace.json'))"
+
+      # Every reference/asset file named in SKILL.md must exist — the skill stops
+      # rather than improvising if one is missing, so a broken bundle is a dead skill.
+      - name: Reference integrity
+        run: |
+          missing=0
+          for f in $(grep -ohE '(references|assets)/[a-z<>/-]+\.md' skills/integrate/SKILL.md | sort -u); do
+            case "$f" in *'<'*) continue;; esac
+            [ -f "skills/integrate/$f" ] || { echo "::error::SKILL.md references missing file: $f"; missing=1; }
+          done
+          exit $missing

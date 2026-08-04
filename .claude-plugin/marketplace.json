@@ -1,0 +1,11 @@
+{
+  "name": "signalgate",
+  "owner": { "name": "SignalGate" },
+  "plugins": [
+    {
+      "name": "signalgate",
+      "source": "./",
+      "description": "Guided SignalGate SDK integration: repo analysis, use-case fit check, two log calls plus a ready-to-enable check gate, and an integration runbook."
+    }
+  ]
+}
