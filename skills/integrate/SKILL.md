@@ -111,8 +111,11 @@ Read-only. Detect, in order:
 - **(g)** whether a browser envelope already reaches any handler (a prior integration).
 
 Then determine **integration scope** (`references/scope.md`): is the browser/client
-half in this repo, a visible sibling repo, or absent? A mobile/native client forces
-backend-only.
+half in this repo, a visible sibling repo, or absent? A mobile/native client still
+forces backend-only — not for lack of a client SDK (Android has a published one; see
+the allow-list table below), but because the app lives in a separate repo and toolchain
+this skill never writes into. Hand over the client half instead:
+`assets/client/android.md`.
 
 Load the matching **port reference** now: `references/python.md`, `node.md`, `go.md`,
 or `java.md`. Do not proceed on memory — the signatures, defaults and per-port hazards

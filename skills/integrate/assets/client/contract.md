@@ -3,7 +3,8 @@
 Use this when the client half is **not in scope** (frontend not visible, mobile/native
 client, or the user declined). Fill the placeholders from the backend code you just
 wrote, so the field names are real rather than illustrative, and paste the result into
-`INTEGRATION.md`.
+`INTEGRATION.md`. When the client is an **Android app**, also hand over the
+Android-specific guidance in `assets/client/android.md` alongside this contract.
 
 This is a **generated contract**, not documentation: every name below must come from the
 code you wrote, never be typed from memory.
@@ -80,6 +81,11 @@ Reference: https://signalgate.ai/docs/frontend
 
 ### Mobile / native clients
 
-There is no published SDK for mobile platforms yet. Until there is, instrument the web
-surface, or contact SignalGate about mobile coverage before planning around it.
+**Android:** a published client SDK exists — `ai.signalgate:android-sdk:0.1.0` on Maven
+Central. It produces the same four-field envelope as the browser SDK, so this contract
+applies unchanged: the app captures a fresh payload per request and sends it in the JSON
+body under the same field names. Integration guide: https://signalgate.ai/docs/mobile
+
+For other native platforms, instrument the web surface or contact SignalGate before
+planning around client coverage.
 ```

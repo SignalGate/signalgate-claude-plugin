@@ -55,7 +55,10 @@ Score against the four criteria. Fail → decline. Pass → continue.
    the API and the client, or just the API and hand you the client contract. Which?"*
    Options name real paths: "Both — `api/` and `web/` (Recommended)" · "API only — give
    me the client snippet". Skip when both halves are one repo (state as default). Skip
-   when the client is mobile/absent (no choice exists).
+   when the client is absent (no choice exists). Skip when the client is a mobile app
+   too — a choice exists there (Android has a published client SDK), but wiring an app
+   repo is out of this skill's scope: state the Android hand-off
+   (`assets/client/android.md`) as the default instead of asking.
 3. **"What is `user_id` at this handler?"** — session/JWT id · submitted email or
    username (pre-auth login has no id yet) · anonymous/session id · leave empty. Needed
    for `log()` too, not just gating; genuinely unresolvable by scan for pre-auth flows.

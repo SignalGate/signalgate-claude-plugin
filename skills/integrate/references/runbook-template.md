@@ -51,8 +51,11 @@ have the **owner or admin** role.
 Already done — the client half was wired in `{{client_path}}`. It captures one envelope
 per protected request and sends them as `signalgate` and `signalgate_log`.
 {{else}}
-Your browser code must attach an envelope to the same request as the action. Install the
-browser SDK (`@signalgate/fingerprint-sdk`) and, using your **public** key:
+Your browser code must attach an envelope to the same request as the action. Load the
+browser SDK from its version-pinned CDN URL — there is no npm package, so never
+`npm install` it: `<script src="https://sdk.signalgate.ai/v0.3.3/index.global.js"></script>`
+(the bundle assigns `window.SignalGate`; keep the version pinned). Then, using your
+**public** key:
 
 - capture a **fresh** envelope for each call — never cache, queue, batch or replay one;
 - send it in the request body as `{{envelope_field}}` (for the gate) and
