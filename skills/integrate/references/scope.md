@@ -10,7 +10,7 @@ the stack to touch from what is **visible**, and confirm it with the user.
 |---|---|
 | Both halves in one repo (Next.js, Nuxt, SvelteKit, Rails, Django templates, Laravel, Phoenix…) | Do both. There is no cross-repo question — state it as a fact. |
 | Sibling repos, both visible | Offer both; ask **explicitly, per repo** (scope-consent question, `interview.md`); default to both. |
-| Backend visible, frontend not — or a mobile/native client | Backend only + a **generated** browser contract in `INTEGRATION.md`. |
+| Backend visible, frontend not — or a mobile/native client | Backend only + a **generated** client contract in `INTEGRATION.md` (the browser contract; for an Android app, the Android hand-off in `assets/client/android.md` alongside it). |
 | Frontend visible, backend not | **Redirect** — ask the user to open/point at the backend repo. Split-team exception below. |
 
 ## Why degradation favours the backend half
@@ -56,7 +56,7 @@ what makes a later re-run (especially gate activation) cheap.
   "service_path": "services/api",
   "framework": "fastapi",
   "scope": "full-stack | backend-only",
-  "client_path": "web | null",
+  "client_path": "web | android | null",
   "use_case": "otp-fraud",
   "method": "otp.send",
   "target_method": "otp.verified",
