@@ -67,9 +67,14 @@ These are not style preferences. Violating one is a defect.
    plugin, and **stop**. A partial install must fail loudly, not silently produce unsafe
    code. (The allow-list itself is inlined below, so it can never go missing.)
 
-10. **The browser SDK is CDN-only — there is no npm package.** Never emit `npm install` or
-    a bare `import` for it. Load the version-pinned URL and read `window.SignalGate`.
-    Getting this wrong breaks the customer's build at install time.
+10. **The RAW browser engine is CDN-only — it is on no package registry.** Never emit
+    `npm install` or a bare `import` for the raw engine: load the version-pinned URL and
+    read `window.SignalGate`. Getting this wrong breaks the customer's build at install
+    time. **One exception, and only one:** the published React wrapper
+    `@signalgate/nextjs` (React / Next.js / Vite) does install from npm — it loads the
+    pinned engine itself, so it is the preferred path for those apps. See
+    `assets/client/react.md`. No other package name for the browser half is real,
+    whatever a README says.
 
 11. **`get()` returns a result object, not the envelope** — always destructure `payload`.
     Forwarding the whole result is a silent total telemetry loss: the backend skips the log
