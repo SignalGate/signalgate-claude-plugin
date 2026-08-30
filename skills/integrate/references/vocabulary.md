@@ -44,7 +44,9 @@ user sees in their Events tab / CSV export): `user_agent_platform`, `ua_data_bra
 | Node SDK | `npm install @signalgate/node` |
 | Go SDK | `go get github.com/SignalGate/signalgate-go` |
 | Java SDK | `ai.signalgate:backend-sdk:0.1.0` |
-| Browser SDK | **CDN only — no npm package.** `https://sdk.signalgate.ai/v0.3.3/index.global.js` (assigns `window.SignalGate`) |
+| PHP SDK | `composer require signalgate/signalgate-php` |
+| Browser SDK (raw fingerprint engine) | **CDN only — no npm package.** `https://sdk.signalgate.ai/v0.3.3/index.global.js` (assigns `window.SignalGate`) — the fallback for any non-React browser app |
+| React/Next.js client wrapper | `npm install @signalgate/nextjs` — peer `react >=18 <20`; covers Next.js App Router, Pages Router, plain React, and Vite |
 | Android SDK | Maven Central — `implementation("ai.signalgate:android-sdk:0.1.0")` **plus** `implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2")` (two lines — the coroutines artifact is runtime-scope in the POM, so the app's own `launch {}` does not compile without it) |
 | Docs | `https://signalgate.ai/docs`, `/docs/backend`, `/docs/frontend`, `/docs/mobile`, `/docs/dashboard` |
 
@@ -53,11 +55,18 @@ a browser package that does not exist and per-language doc URLs that do not exis
 customer following them hits a 404. The table above is the only source of truth for
 coordinates and links.
 
-**The browser SDK is on no package registry.** Two different npm-style names for it appear
-in our own materials — one in the backend READMEs, one in a docs snippet. **Both 404.**
-Emitting any npm dependency for the browser SDK kills the customer's build at `npm install`.
-Load the version-pinned CDN URL from the table above instead — never `latest`, never
-unpinned, and never a package name for the browser half regardless of where you saw it.
+**The RAW browser fingerprint SDK is on no package registry.** Two different npm-style
+names for it appear in our own materials — one in the backend READMEs, one in a docs
+snippet, most commonly written `@signalgate/fingerprint-sdk`. **Both 404.** Emitting any
+npm dependency on `@signalgate/fingerprint-sdk`, or any other name for the raw browser
+SDK, kills the customer's build at `npm install`. For any non-React browser app, load the
+version-pinned CDN URL from the table above instead — never `latest`, never unpinned.
+
+**The one exception: `@signalgate/nextjs`.** This wrapper package IS published on npm —
+it is the correct install for React, Next.js (App Router or Pages Router), or Vite apps.
+It carries no dependency on the raw browser SDK above: at runtime, in the browser, it
+injects the same pinned CDN bundle itself. Do not extend this exception to any other
+browser package name — `@signalgate/nextjs` is the only one that exists.
 
 **Browser API, exactly three calls:**
 
@@ -71,6 +80,21 @@ const { payload } = await fp.get();  // per call — DESTRUCTURE payload
 backend a body it cannot read: the log is skipped silently and telemetry stays at zero with
 no error anywhere. This is the quietest failure in the whole integration — always
 destructure.
+
+**React/Next.js wrapper API (`@signalgate/nextjs`), exactly three calls:**
+
+```tsx
+<SignalGateProvider tenantKey={PUBLIC_KEY}>{children}</SignalGateProvider>  // mounted once, at the app root
+const { getPayload, status } = useSignalGate();                            // anywhere under the provider
+const payload = await getPayload();                                        // per call
+```
+
+`getPayload()` **never throws and never rejects.** On any failure (CDN blocked, load
+timeout, underlying SDK error) it resolves `null` instead of raising — there is no result
+object to destructure and nothing to catch. Callers must check `payload === null` rather
+than wrapping the call in `try/catch`. `tenantKey` takes the **public** key, never the
+`pk_live_` API key. `status` is one of `idle`, `loading`, `ready`, `error` — UI state
+only, never a substitute for checking `payload === null`.
 
 **Android API, exactly three calls** (Maven artifact above; package `ai.signalgate.android`):
 
