@@ -4,7 +4,9 @@ Detection markers: `next` in `package.json`; `app/` directory with `route.ts` fi
 (App Router) or `pages/api/` (Pages Router); `next.config.*`.
 
 **This is the common full-stack case** — the browser half is usually in the same repo, so
-there is no cross-repo scope question. Wire both halves (see `assets/client/react.md`).
+there is no cross-repo scope question. Wire both halves: this file covers the route
+handler below; `assets/client/react.md` covers the `<SignalGateProvider>` / `useSignalGate()`
+wiring for the same repo's client half.
 
 **Where things go**
 - singleton → `lib/signalgate.ts` (module scope — Next reuses the module across requests)
