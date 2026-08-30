@@ -3,8 +3,8 @@
 One skill, `signalgate:integrate`, that wires the SignalGate backend SDK into your
 codebase with a guided, review-first flow:
 
-1. **Analyzes your repo** — detects your stack (Python, Node.js, Go or Java) and the
-   handlers worth protecting.
+1. **Analyzes your repo** — detects your stack (Python, Node.js, Go, Java or PHP) and
+   the handlers worth protecting.
 2. **Checks the fit** — a couple of questions to confirm SignalGate actually addresses
    the problem you're facing. If it doesn't, it says so and tells you what SignalGate
    *is* for.
@@ -44,4 +44,5 @@ or just ask: *"integrate SignalGate into this repo"*.
 ## Requirements
 
 - A SignalGate account (you'll create your keys in the dashboard during the flow).
-- One of the supported backend stacks: Python 3.10+, Node.js 18+, Go 1.22+, Java 17+.
+- One of the supported backend stacks: Python 3.10+, Node.js 18+, Go 1.22+, Java 17+,
+  PHP 8.1+.
