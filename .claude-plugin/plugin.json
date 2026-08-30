@@ -1,6 +1,6 @@
 {
   "name": "signalgate",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "SignalGate integration tooling for Claude Code: analyze your repo, confirm the use case fits, and wire the SignalGate SDK in with a guided, review-first flow.",
   "author": {
     "name": "SignalGate"

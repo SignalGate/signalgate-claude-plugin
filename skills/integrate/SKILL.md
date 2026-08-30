@@ -1,6 +1,6 @@
 ---
 name: integrate
-description: Integrate the SignalGate backend SDK into this repository. Use when the user says "integrate SignalGate", "add SignalGate to my backend", "set up SignalGate fraud detection", "wire up the SignalGate SDK", or "protect my login, checkout, OTP, deposit or signup endpoint with SignalGate". Analyzes the repo, detects the stack (Python, Node.js, Go or Java), checks the problem is a fit, asks a few clickable questions, then writes the client wiring, two log calls, and a ready-to-enable check gate, plus an INTEGRATION.md runbook.
+description: Integrate the SignalGate backend SDK into this repository. Use when the user says "integrate SignalGate", "add SignalGate to my backend", "set up SignalGate fraud detection", "wire up the SignalGate SDK", or "protect my login, checkout, OTP, deposit or signup endpoint with SignalGate". Analyzes the repo, detects the stack (Python, Node.js, Go, Java or PHP), checks the problem is a fit, asks a few clickable questions, then writes the client wiring, two log calls, and a ready-to-enable check gate, plus an INTEGRATION.md runbook.
 allowed-tools: Read, Glob, Grep, Edit, Write, AskUserQuestion, Bash(cat ${CLAUDE_SKILL_DIR}/references/*.md), Bash(cat ${CLAUDE_SKILL_DIR}/assets/**), Bash
 ---
 
@@ -99,7 +99,8 @@ asking now turns an evaluation into a signup wall.
 Read-only. Detect, in order:
 
 - **(a) candidate services** and their language + version floor, from manifests
-  (`pyproject.toml`/`requirements.txt`, `package.json`, `go.mod`, `pom.xml`/`build.gradle`);
+  (`pyproject.toml`/`requirements.txt`, `package.json`, `go.mod`, `pom.xml`/`build.gradle`,
+  `composer.json`);
 - **(b) framework** per candidate (see the port reference for markers);
 - **(c) funnel-point handlers**, ranked — login, signup, OTP send/verify, deposit,
   checkout/payment, content endpoints;
@@ -118,7 +119,7 @@ this skill never writes into. Hand over the client half instead:
 `assets/client/android.md`.
 
 Load the matching **port reference** now: `references/python.md`, `node.md`, `go.md`,
-or `java.md`. Do not proceed on memory — the signatures, defaults and per-port hazards
+`java.md`, or `php.md`. Do not proceed on memory — the signatures, defaults and per-port hazards
 are exact and some contradict our own docs.
 
 Hold the findings in working memory for now. **Do not write `.signalgate/stack.json` yet** —
@@ -221,8 +222,8 @@ yet**: a type-check or build will fail to resolve the new import, and that failu
 nothing about your edits.
 
 - Run now: a syntax/compile check on every file you touched (`python -m py_compile`,
-  `tsc --noEmit` only if `node_modules` already has the SDK, `go build`, `mvn -q compile`),
-  plus the repo's existing lint and any test suite that does not import the SDK.
+  `tsc --noEmit` only if `node_modules` already has the SDK, `go build`, `mvn -q compile`,
+  `php -l`), plus the repo's existing lint and any test suite that does not import the SDK.
 - Defer, and say so: full type-check, build, and any test that imports the SDK — these need
   `pip install` / `npm install` / `go mod download` / `mvn` to run first.
 - **Never report "verified" for a check that could not run.** State plainly which checks
@@ -275,7 +276,7 @@ On no answer, write nothing: report findings, state the defaults you'd use, and 
 - `references/interview.md` — the three question calls, verbatim options
 - `references/vocabulary.md` — the emit allow-list + the deflection script. **No deny-list.**
 - `references/runbook-template.md` — the `INTEGRATION.md` the user keeps
-- `references/python.md` · `node.md` · `go.md` · `java.md` — exact signatures, defaults, per-port hazards
+- `references/python.md` · `node.md` · `go.md` · `java.md` · `php.md` — exact signatures, defaults, per-port hazards
 
 ---
 
