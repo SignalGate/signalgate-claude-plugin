@@ -3,13 +3,15 @@
 Only for use when the client half is **in scope** (`references/scope.md`). Uses the
 **public** key (43 chars, no prefix) — never the `pk_live_` API key.
 
-Detection markers: `react` / `next` / `vite` in `package.json`; the form or fetch call that
-submits to the backend handler you just instrumented.
+Detection markers: `react` (or `next`) in `package.json` — the wrapper needs React to
+mount a provider, so a Vite app qualifies only when it is a React+Vite app; plus the form
+or fetch call that submits to the backend handler you just instrumented.
 
 **Lead with the wrapper.** `@signalgate/nextjs` is the published npm package for this
-audience — React, Next.js (App Router or Pages Router), and Vite apps all use it. Only
-fall back to the hand-rolled CDN module below for a non-React browser app (vanilla JS,
-etc.), where there is no framework to hang a provider off.
+audience — React, Next.js (App Router or Pages Router), and React+Vite apps all use it.
+It peer-depends on `react >=18 <20`. Fall back to the hand-rolled CDN module below for any
+browser app WITHOUT React — vanilla JS, and equally Vue or Svelte on Vite — where there
+is no React tree to hang a provider off.
 
 ## Install
 
@@ -37,7 +39,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
       <body>
-        <SignalGateProvider tenantKey={process.env.NEXT_PUBLIC_SIGNALGATE_KEY ?? ""}>
+        <SignalGateProvider tenantKey={process.env.NEXT_PUBLIC_SIGNALGATE_PUBLIC_KEY ?? ""}>
           {children}
         </SignalGateProvider>
       </body>
@@ -54,7 +56,7 @@ import { SignalGateProvider } from "@signalgate/nextjs";
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
-    <SignalGateProvider tenantKey={process.env.NEXT_PUBLIC_SIGNALGATE_KEY ?? ""}>
+    <SignalGateProvider tenantKey={process.env.NEXT_PUBLIC_SIGNALGATE_PUBLIC_KEY ?? ""}>
       <Component {...pageProps} />
     </SignalGateProvider>
   );
@@ -62,7 +64,7 @@ export default function App({ Component, pageProps }: AppProps) {
 ```
 
 **Plain React / Vite** — mount it once near the root of the component tree the same way,
-reading the key from `import.meta.env.VITE_SIGNALGATE_KEY` instead.
+reading the key from `import.meta.env.VITE_SIGNALGATE_PUBLIC_KEY` instead.
 
 `tenantKey` is the **public** key — safe in browser code. Never pass the `pk_live_` API
 key here. Only the first `<SignalGateProvider>` to mount on a page actually configures
@@ -115,7 +117,7 @@ if (payload === null) {
 
 The public key is browser-safe by design, so a public env var is fine:
 
-- Next.js: `NEXT_PUBLIC_SIGNALGATE_KEY` · Vite: `VITE_SIGNALGATE_KEY`
+- Next.js: `NEXT_PUBLIC_SIGNALGATE_PUBLIC_KEY` · Vite: `VITE_SIGNALGATE_PUBLIC_KEY`
 
 Add it to `.env.example`. **Never** put the `pk_live_` API key in either of these.
 

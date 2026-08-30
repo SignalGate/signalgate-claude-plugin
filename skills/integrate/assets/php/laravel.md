@@ -53,32 +53,42 @@ blank key and every event 401s, with no error at boot.
 ## Shutdown — the FPM hazard, Laravel-specific answer
 
 The `Client`'s `register_shutdown` hook is on by default and works as-is under
-classic php-fpm, but only once the response has actually reached the browser. Call
-`fastcgi_finish_request()` from a terminating middleware so it runs after every
-response, not just one route:
+classic php-fpm, but only once the response has actually reached the browser.
+
+Laravel already finishes the FastCGI request for you: `public/index.php` calls
+`$response->send()` — which invokes `fastcgi_finish_request()` itself when php-fpm
+provides it — and only then `$kernel->terminate()`. So never call `send()` or
+`fastcgi_finish_request()` by hand; doing it inside `handle()` sends the response
+early and leaves the framework's own `send()` as a duplicate. Use Laravel's
+post-response hook instead — a **terminable** middleware, whose `terminate()` runs
+after the response has reached the browser:
 
 ```php
-// app/Http/Middleware/FinishRequestForSignalGate.php
+// app/Http/Middleware/FlushSignalGate.php
 namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use SignalGate\Client;
 
-class FinishRequestForSignalGate
+class FlushSignalGate
 {
     public function handle(Request $request, Closure $next)
     {
-        $response = $next($request);
-        if (function_exists('fastcgi_finish_request')) {
-            $response->send();
-            fastcgi_finish_request();
-        }
-        return $response;
+        return $next($request);   // nothing to do on the way in
+    }
+
+    // Runs AFTER the response has been sent — the safe place for the drain.
+    public function terminate(Request $request, $response): void
+    {
+        app(Client::class)->flush();
     }
 }
 ```
 
-Register it late in the HTTP kernel's middleware stack so it wraps the whole request.
+Register it in the HTTP kernel's middleware stack so it covers every response, not just
+one route. This is the same shape as the Octane guidance below, so both deployment
+models drain through one hook.
 
 **Under Octane** (Swoole/RoadRunner workers with no per-request process teardown),
 the shutdown hook never fires between requests, and `fastcgi_finish_request()` is a
