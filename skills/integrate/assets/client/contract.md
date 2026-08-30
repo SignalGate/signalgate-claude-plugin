@@ -25,8 +25,24 @@ Nothing reaches SignalGate until your client sends an envelope on those same req
 
 ### What the client must do
 
-1. **Load the SDK from the pinned CDN URL** — there is no npm package, so do not run
-   `npm install` for it:
+**If your frontend is React, Next.js (App Router or Pages Router), or Vite:** install the
+published wrapper — do not hand-roll the steps below.
+
+```bash
+npm install @signalgate/nextjs
+```
+
+Peer dependency: `react` (`>=18 <20`). Mount `<SignalGateProvider tenantKey={YOUR_PUBLIC_KEY}>`
+once at the app root, then call `const { getPayload } = useSignalGate()` at the funnel
+point and `await getPayload()` — **it never throws; it resolves `null` on failure**, so
+check for `null` rather than wrapping it in `try/catch`. `tenantKey` is the same
+**public key** described below, never the `pk_live_` API key.
+
+**For every other browser app** (no React tree to mount a provider in), hand-roll it
+against the pinned CDN bundle:
+
+1. **Load the SDK from the pinned CDN URL** — no npm package exists for this raw SDK,
+   so do not run `npm install` for it:
 
    ```html
    <script src="https://sdk.signalgate.ai/v0.3.3/index.global.js"></script>
