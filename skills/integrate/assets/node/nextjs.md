@@ -34,7 +34,7 @@ export function buildEvent(opts: {
   userId: string; ip: string; method: string; envelope: EncryptedPayload;
 }): Event {
   return {
-    user_id: opts.userId,
+    userId: opts.userId,
     ip: opts.ip,
     method: opts.method,
     timestamp: new Date().toISOString(),

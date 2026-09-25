@@ -24,7 +24,7 @@ npm install @signalgate/node       # pin: 0.1.0
 new Client({
   apiKey: string,                  // required
   checkTimeoutMs?: number,         // 3000
-  logTimeoutMs?: number,           // 2000
+  logTimeoutMs?: number,           // 1000
   logQueueCapacity?: number,       // 10000
   logMaxRetries?: number,          // 3
   logRetryBaseMs?: number,         // 200
@@ -41,15 +41,20 @@ prefix validation — a typo'd key surfaces as a 401 on first call. No base-URL 
 
 ```ts
 type Event = {
-  user_id: string; ip: string; method: string; timestamp: string;
+  userId: string; ip: string; method: string; timestamp: string;
   payload: EncryptedPayload; custom?: Record<string, unknown>;
 };
 type EncryptedPayload = { encrypted: string; timestamp: number; nonce: string; v?: number };
 type CheckResult = {
-  action: string; score: number; request_id: string; tenant_id: string;
-  timestamp: string; processing_time_us: number; failedOpen: boolean;
+  action: string; score: number; requestId: string; tenantId: string;
+  timestamp: string; processingTimeUs: number; failedOpen: boolean;
 };
 ```
+
+**Field names are camelCase.** The SDK maps them to the snake_case wire body (`user_id`,
+`request_id`, …) itself. Never write wire names in Node code: an `Event` with `user_id`
+instead of `userId` fails to type-check in TypeScript, and in plain JavaScript it is sent
+without a user id and rejected with a 400.
 
 **Two timestamps:** outer `timestamp` is an **ISO-8601 string** (`new Date().toISOString()`);
 `payload.timestamp` is a **unix-ms number** from the browser.
@@ -105,7 +110,7 @@ export function buildEvent(opts: {
   userId: string; ip: string; method: string; envelope: EncryptedPayload;
 }): Event {
   return {
-    user_id: opts.userId,
+    userId: opts.userId,
     ip: opts.ip,
     method: opts.method,
     timestamp: new Date().toISOString(),   // ISO-8601 string
