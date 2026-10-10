@@ -45,6 +45,7 @@ user sees in their Events tab / CSV export): `user_agent_platform`, `ua_data_bra
 | Go SDK | `go get github.com/SignalGate/signalgate-go` |
 | Java SDK | `ai.signalgate:backend-sdk:0.1.0` |
 | PHP SDK | `composer require signalgate/signalgate-php` |
+| C# / .NET SDK | `dotnet add package SignalGate` (NuGet package `SignalGate`, version `0.1.0`) |
 | Browser SDK (raw fingerprint engine) | **CDN only — no npm package.** `https://sdk.signalgate.ai/v0.3.3/index.global.js` (assigns `window.SignalGate`) — the fallback for any non-React browser app |
 | React/Next.js client wrapper | `npm install @signalgate/nextjs` — peer `react >=18 <20`; covers Next.js App Router, Pages Router, plain React, and Vite |
 | Android SDK | Maven Central — `implementation("ai.signalgate:android-sdk:0.1.0")` **plus** `implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2")` (two lines — the coroutines artifact is runtime-scope in the POM, so the app's own `launch {}` does not compile without it) |
