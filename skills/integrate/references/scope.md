@@ -51,7 +51,7 @@ what makes a later re-run (especially gate activation) cheap.
 
 ```json
 {
-  "sdk": "python | node | go | java | php",
+  "sdk": "python | node | go | java | php | csharp",
   "sdk_version": "0.3.2",
   "service_path": "services/api",
   "framework": "fastapi",
